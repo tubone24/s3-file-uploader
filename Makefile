@@ -1,12 +1,12 @@
 .PHONY: install build
 
-install:
+backend-install:
 	go mod download
 
-build:
-	cd src && \
+backend-build:
+	cd src/backend && \
 	go build -o ../log-uploader
 
-run:
-	cd src && \
+backend-run:
+	cd src/backend && \
 	go run main.go

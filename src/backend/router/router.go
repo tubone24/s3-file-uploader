@@ -4,9 +4,9 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
+	"github.com/tubone24/s3-file-uploader/src/backend/logic"
 	"gopkg.in/go-playground/validator.v9"
 	"net/http"
-	"github.com/tubone24/s3-file-uploader/src/logic"
 )
 
 func New() *echo.Echo {
@@ -35,9 +35,6 @@ func status(c echo.Context) error {
 }
 
 func upload(c echo.Context) (err error) {
-	if err != nil {
-		return err
-	}
 	data := new(Data)
 	if err = c.Bind(data); err != nil {
 		return err
@@ -45,10 +42,9 @@ func upload(c echo.Context) (err error) {
 	if err = c.Validate(data); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "BadRequest", "message": "invalid payload"})
 	}
-	err = logic.UploadFileToS3(data.FileType, data.Data, data.FileName)
+	result, err := logic.UploadFileToS3(data.FileType, data.Data, data.FileName)
 	if err != nil {
-		//return c.JSON(http.StatusBadRequest, map[string]string{"error": "BadRequest", "message": "invalid aaaa"})
-		return err
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "InternalServerError", "message": result})
 	}
-	return c.JSON(http.StatusOK, data)
+	return c.JSON(http.StatusOK, map[string]string{"fileType": data.FileType, "fileName": data.FileName})
 }

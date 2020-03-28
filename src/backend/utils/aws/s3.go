@@ -13,12 +13,16 @@ type S3 struct {
 	session *session.Session
 }
 
-var s3Session = session.Must(session.NewSession(
-	&aws.Config{
-		Region: aws.String(Region),
-		MaxRetries: aws.Int(3),
-	},
-))
+//var s3Session = session.Must(session.NewSession(
+//	&aws.Config{
+//		Region: aws.String(Region),
+//		MaxRetries: aws.Int(3),
+//	},
+//))
+
+var s3Session = session.Must(session.NewSessionWithOptions(session.Options{
+	SharedConfigState: session.SharedConfigEnable,
+}))
 
 var s3Instance = &S3{client:s3.New(s3Session)}
 
@@ -36,7 +40,6 @@ func (s *S3) UploadFile(bucket string, filePath string, key string, contentType 
 
 	uploader := s3manager.NewUploader(s3Session)
 	params := &s3manager.UploadInput{
-		ACL: aws.String("public-read"),
 		ContentType: aws.String(contentType),
 		Bucket: aws.String(bucket),
 		Key: aws.String(key),

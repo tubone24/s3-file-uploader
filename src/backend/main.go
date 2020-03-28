@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/tubone24/s3-file-uploader/src/router"
+	"github.com/tubone24/s3-file-uploader/src/backend/router"
 )
 
 func main() {

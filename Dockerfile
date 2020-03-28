@@ -3,6 +3,6 @@ MAINTAINER tubone24 <tubo.yyyuuu@gmail.com>
 RUN mkdir /app
 WORKDIR /app
 ADD . /app
-RUN make install
-RUN make build
+RUN make backend-install
+RUN make backend-build
 EXPOSE 8585
