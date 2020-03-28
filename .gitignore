@@ -14,7 +14,7 @@ log-uploader
 
 # front build
 
-src/backend/assets/
+src/backend/assets/*
 
 # npm
 node_modules
