@@ -1,0 +1,13 @@
+# build
+*.exe
+log-uploader
+
+# IntelliJ
+.idea
+*.iml
+
+# Tmp
+*.tmp
+
+# go modules
+*.sum
