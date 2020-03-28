@@ -2,16 +2,18 @@ package router
 
 import "gopkg.in/go-playground/validator.v9"
 
-func NewValidator() *Validator {
-	return &Validator{
-		validator: validator.New(),
+type (
+	Data struct {
+		FileType  string `json:"fileType" validate:"required"`
+		Data string `json:"data" validate:"required"`
+		FileName string `json:"fileName" validate:"required"`
 	}
-}
 
-type Validator struct {
-	validator *validator.Validate
-}
+	CustomValidator struct {
+		validator *validator.Validate
+	}
+)
 
-func (v *Validator) Validate(i interface{}) error {
-	return v.validator.Struct(i)
+func (cv *CustomValidator) Validate(i interface{}) error {
+	return cv.validator.Struct(i)
 }
