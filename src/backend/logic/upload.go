@@ -5,11 +5,12 @@ import (
 	"github.com/tubone24/s3-file-uploader/src/backend/utils/aws"
 	"io/ioutil"
 	"os"
+	"strings"
 )
 
 
 func UploadFileToS3(fileType string, encodeData string, fileName string) (result string, err error) {
-	data, err := base64.StdEncoding.DecodeString(encodeData)
+	data, err := base64.StdEncoding.DecodeString(strings.Replace(encodeData, "data:text/csv;base64,", "", 1))
 	if err != nil {
 		return "failed decode Data", err
 	}

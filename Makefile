@@ -1,5 +1,16 @@
 .PHONY: install build
 
+front-install:
+	cd src/front && \
+	npm install
+
+front-build:
+	cd src/front && \
+	npm run build && \
+	rm -rf assets/* && \
+	touch assets/.gitkeep && \
+	cp -r dist/* ../backend/assets/
+
 backend-install:
 	go mod download
 
