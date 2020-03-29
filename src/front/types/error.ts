@@ -1,4 +1,4 @@
-export class PdfFileNotFoundError extends Error {
+export class FileNotFoundError extends Error {
   constructor(e?: string) {
     super(e);
     this.name = new.target.name;

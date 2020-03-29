@@ -29,6 +29,7 @@ func initRouting(e *echo.Echo){
 	e.GET("/status", status)
 	e.POST("/api/upload", upload)
 	e.GET("/api/list", list)
+	e.GET("/api/download", download)
 }
 
 func status(c echo.Context) error {
@@ -60,4 +61,14 @@ func list(c echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusInternalServerError, "error")
 	}
 	return c.JSON(http.StatusOK, result)
+}
+
+func download(c echo.Context) (err error) {
+	key := c.QueryParam("key")
+	fileBytes, err := logic.DownloadFileToS3(key)
+	contentType := logic.GetContentType(key)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "error")
+	}
+	return c.Blob(http.StatusOK, contentType, fileBytes)
 }

@@ -1,5 +1,17 @@
 <template>
     <div id="list">
+        <div class="select">
+            <b-field>
+                <b-select id="format-select" v-model="state.selected">
+                    <option disabled value="">ファイル種類選択</option>
+                    <option value="test-test">test-test</option>
+                </b-select>
+            </b-field>
+            <div v-if="state.selected">
+                <b-button id="search-file" type="is-primary" @click="updateFileList">検索</b-button>
+            </div>
+        </div>
+        <div class="file-table">
         <table>
             <thead>
             <tr>
@@ -14,10 +26,11 @@
                 <th>{{ item.name }}</th>
                 <th>{{ item.lastModified }}</th>
                 <th>{{ item.size }}</th>
-                <button v-on:click="doDownload(item.file_path)">DL</button>
+                <button v-on:click="doDownload(item.name)">DL</button>
             </tr>
             </tbody>
         </table>
+        </div>
     </div>
 </template>
 
@@ -32,16 +45,18 @@
         ref
     } from '@vue/composition-api';
     import axios from 'axios';
-    import {PdfFileNotFoundError} from "~/types/error";
+    import {FileNotFoundError} from "~/types/error";
     // data
     const state = reactive<{
         uploadList: Array<Map<string, string>>
+        selected: string
     }>({
-        uploadList: []
+        uploadList: [],
+        selected: ''
     });
 
     const updateFileList = async (): Promise<void> => {
-        const res = await axios.get('/api/list');
+        const res = await axios.get('/api/list?prefix=' + state.selected);
         if (res.status === 200) {
             state.uploadList = res.data.fileList;
         }
@@ -49,16 +64,20 @@
     };
 
     const downloadFile = async (filePath: string): Promise<Blob> => {
-        const res = await axios.post('/download', { uploadId: filePath, },
-            {responseType: 'blob'}).catch((err) => {
+        const res = await axios.get('/api/download', {
+            params: {
+                key: filePath
+            }
+        }
+        ).catch((err) => {
                 if (err.response.status === 404) {
-                    throw new PdfFileNotFoundError('PdfFileNotFound');
+                    throw new FileNotFoundError('FileFileNotFound');
                 } else {
                     throw err;
                 }
             },
         );
-        return new Blob([res.data], {type: 'application/pdf'});
+        return new Blob([res.data]);
     };
     type Props = {
         propHello: string;
@@ -78,24 +97,22 @@
                     const blob = await downloadFile(filePath);
                     const link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
-                    link.download = 'result.pdf';
+                    const filename = filePath.match(".+/(.+?)([\?#;].*)?$")[1];
+                    link.download = filename;
                     link.click();
                 } catch (e) {
-                    if (e instanceof PdfFileNotFoundError) {
-                        console.log(toast)
+                    if (e instanceof FileNotFoundError) {
+                        console.log(toast);
                         toast.global.nofileError();
                     } else {
                         toast.global.unknownError();
                     }
                 }
             };
-            onBeforeMount( async () => {
-                    await updateFileList()
-                }
-            );
             return {
                 state,
                 propsHello,
+                updateFileList,
                 doDownload
             };
         }
@@ -109,6 +126,10 @@
     #list {
         max-width: 640px;
         margin: 0 auto;
+    }
+    .file-table {
+        position: relative;
+        top: 100px;
     }
     table {
         width: 110%;

@@ -60,6 +60,13 @@ const nuxtConfig: Configuration = {
         },
       },
       {
+        name: 'nofileError',
+        message: 'ファイルが見つかりません',
+        options: {
+          type: 'warn',
+        },
+      },
+      {
         name: 'unknownError',
         message: 'エラーが発生しました',
         options: {

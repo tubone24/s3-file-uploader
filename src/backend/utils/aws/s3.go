@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"os"
 	"strconv"
+	"time"
 )
 
 type S3 struct {
@@ -66,7 +67,9 @@ func (s *S3) ListObject(bucket string, prefix string) ([]S3FileObjectInfo, error
 	}
 
 	for _, item := range resp.Contents {
-		o := S3FileObjectInfo{*item.Key, item.LastModified.String(), *item.Size}
+		jst := time.FixedZone("Asia/Tokyo", 9*60*60)
+		formattedTime := item.LastModified.In(jst).Format(time.RFC3339)
+		o := S3FileObjectInfo{*item.Key, formattedTime, *item.Size}
 		objectList = append(objectList, o)
 	}
 	return objectList, nil
@@ -79,5 +82,24 @@ type S3FileObjectInfo struct {
 }
 
 func (s *S3FileObjectInfo )ConvertS3FileObjectInfoToMap() map[string]string{
-	return map[string]string{"name": s.Name, "lastModified": s.LastModified, "size": strconv.FormatInt(s.Size, 10)}
+	return map[string]string{"name": s.Name, "lastModified": s.LastModified, "size": strconv.FormatInt(s.Size, 10) + "B"}
+}
+
+func (s *S3) DownloadFile(bucket string, key string) ([]byte, error) {
+	downloader := s3manager.NewDownloader(s3Session)
+	params := &s3.GetObjectInput{
+		Bucket: aws.String(bucket),
+		Key: aws.String(key),
+	}
+
+	fileBuf := &aws.WriteAtBuffer{}
+
+	_, err := downloader.Download(fileBuf, params)
+	if err != nil {
+		return nil, err
+	}
+
+	fileBytes := fileBuf.Bytes()
+
+	return fileBytes, nil
 }
