@@ -80,7 +80,7 @@
 
         state.isLoading = true;
         let statusCode;
-        await axios.post('/upload', {
+        await axios.post('/api/upload', {
           fileType: state.selected,
           data: state.file,
           fileName: state.fileName,

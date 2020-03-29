@@ -27,8 +27,8 @@ func New() *echo.Echo {
 func initRouting(e *echo.Echo){
 	e.Static("/", "assets")
 	e.GET("/status", status)
-	e.POST("/upload", upload)
-	e.GET("/list", list)
+	e.POST("/api/upload", upload)
+	e.GET("/api/list", list)
 }
 
 func status(c echo.Context) error {

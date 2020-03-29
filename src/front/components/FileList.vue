@@ -11,9 +11,9 @@
             </thead>
             <tbody>
             <tr v-for="item in state.uploadList">
-                <th>{{ item.file_path }}</th>
+                <th>{{ item.name }}</th>
+                <th>{{ item.lastModified }}</th>
                 <th>{{ item.size }}</th>
-                <th>{{ item.updated_at }}</th>
                 <button v-on:click="doDownload(item.file_path)">DL</button>
             </tr>
             </tbody>
@@ -39,15 +39,17 @@
     }>({
         uploadList: []
     });
+
     const updateFileList = async (): Promise<void> => {
-        const res = await axios.get('/list');
+        const res = await axios.get('/api/list');
         if (res.status === 200) {
-            state.uploadList = res.data;
+            state.uploadList = res.data.fileList;
         }
         console.log(JSON.stringify(state.uploadList));
     };
-    const downloadPDF = async (filePath: string): Promise<Blob> => {
-        const res = await axios.post(backendURL + 'convert/pdf/download', { uploadId: filePath, },
+
+    const downloadFile = async (filePath: string): Promise<Blob> => {
+        const res = await axios.post('/download', { uploadId: filePath, },
             {responseType: 'blob'}).catch((err) => {
                 if (err.response.status === 404) {
                     throw new PdfFileNotFoundError('PdfFileNotFound');
@@ -73,7 +75,7 @@
             const toast = ctx.root.$root.$toast;
             const doDownload = async (filePath: string): Promise<void> => {
                 try{
-                    const blob = await downloadPDF(filePath);
+                    const blob = await downloadFile(filePath);
                     const link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
                     link.download = 'result.pdf';

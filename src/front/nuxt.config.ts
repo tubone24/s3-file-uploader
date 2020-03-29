@@ -19,7 +19,7 @@ const nuxtConfig: Configuration = {
     ],
   },
   loading: { color: '#3B8070' },
-  css: ['~/assets/css/main.css'],
+  // css: ['~/assets/css/main.css'],
   plugins: ['@/plugins/compositionAPI'],
   build: {
     extend(config, { isClient }) {
