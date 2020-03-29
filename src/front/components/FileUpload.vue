@@ -86,7 +86,7 @@
           fileName: state.fileName,
         }).then((response) => {
           statusCode = response.status;
-          toast.global.allSuccess();
+          toast.global.allSuccessUpload();
         }).catch((err) => {
           statusCode = err.response.status;
           toast.global.unknownError();

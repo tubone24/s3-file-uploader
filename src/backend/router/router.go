@@ -41,6 +41,7 @@ func initRouting(e *echo.Echo){
 	e.POST("/api/upload", upload)
 	e.GET("/api/list", list)
 	e.GET("/api/download", download)
+	e.POST("/api/delete", deleteFile)
 }
 
 func status(c echo.Context) error {
@@ -48,7 +49,7 @@ func status(c echo.Context) error {
 }
 
 func upload(c echo.Context) (err error) {
-	data := new(Data)
+	data := new(UploadData)
 	if err = c.Bind(data); err != nil {
 		log.Error(err)
 		return echo.NewHTTPError(http.StatusBadRequest, "failed bind data")
@@ -82,4 +83,22 @@ func download(c echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusInternalServerError, "error")
 	}
 	return c.Blob(http.StatusOK, contentType, fileBytes)
+}
+
+func deleteFile(c echo.Context) (err error) {
+	data := new(DeletePayload)
+	if err = c.Bind(data); err != nil {
+		log.Error(err)
+		return echo.NewHTTPError(http.StatusBadRequest, "failed bind data")
+	}
+	if err = c.Validate(data); err != nil {
+		//return c.JSON(http.StatusBadRequest, map[string]string{"error": "BadRequest", "message": "invalid payload"})
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid payload")
+	}
+	err = logic.DeleteFileToS3(data.Key)
+	if err != nil {
+		//return c.JSON(http.StatusInternalServerError, map[string]string{"error": "InternalServerError", "message": result})
+		return echo.NewHTTPError(http.StatusInternalServerError, "error...")
+	}
+	return c.JSON(http.StatusOK, map[string]string{"fileName": data.Key})
 }

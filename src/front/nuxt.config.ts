@@ -20,7 +20,7 @@ const nuxtConfig: Configuration = {
   },
   loading: { color: '#3B8070' },
   // css: ['~/assets/css/main.css'],
-  plugins: ['@/plugins/compositionAPI'],
+  plugins: ['@/plugins/compositionAPI', '@/plugins/vueModal'],
   build: {
     extend(config, { isClient }) {
       if (isClient) {
@@ -46,8 +46,15 @@ const nuxtConfig: Configuration = {
     iconPack : 'material',
     register: [
       {
-        name: 'allSuccess',
+        name: 'allSuccessUpload',
         message: 'ファイルの送信が完了しました',
+        options: {
+          type: 'info',
+        },
+      },
+      {
+        name: 'allSuccessDelete',
+        message: 'ファイルの削除ができました',
         options: {
           type: 'info',
         },

@@ -103,3 +103,17 @@ func (s *S3) DownloadFile(bucket string, key string) ([]byte, error) {
 
 	return fileBytes, nil
 }
+
+func (s *S3) DeleteObject(bucket string, key string) error {
+	params := &s3.DeleteObjectInput{
+		Bucket:aws.String(bucket),
+		Key:aws.String(key),
+	}
+
+	_, err := s.client.DeleteObject(params)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -3,10 +3,14 @@ package router
 import "gopkg.in/go-playground/validator.v9"
 
 type (
-	Data struct {
+	UploadData struct {
 		FileType  string `json:"fileType" validate:"required"`
 		Data string `json:"data" validate:"required"`
 		FileName string `json:"fileName" validate:"required"`
+	}
+
+	DeletePayload struct {
+		Key  string `json:"key" validate:"required"`
 	}
 
 	CustomValidator struct {

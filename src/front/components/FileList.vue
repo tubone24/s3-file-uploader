@@ -11,6 +11,11 @@
                 <b-button id="search-file" type="is-primary" @click="updateFileList">検索</b-button>
             </div>
         </div>
+        <div v-if="state.isLoading">
+            <div v-show="state.isLoading" id="post-file-loader">
+                <vue-loading type="bars" color="#0099e4" :size="{ width: '200px', height: '100px' }"></vue-loading>
+            </div>
+        </div>
         <div class="file-table">
         <table>
             <thead>
@@ -26,11 +31,13 @@
                 <th>{{ item.name }}</th>
                 <th>{{ item.lastModified }}</th>
                 <th>{{ item.size }}</th>
-                <button v-on:click="doDownload(item.name)">DL</button>
+                <button class="download-button" v-on:click="doDownload(item.name)">DL</button>
+                <button class="delete-button" v-on:click="doComfirmDelete(item.name)">DEL</button>
             </tr>
             </tbody>
         </table>
         </div>
+        <v-dialog/>
     </div>
 </template>
 
@@ -45,18 +52,27 @@
         ref
     } from '@vue/composition-api';
     import axios from 'axios';
+    import { VueLoading } from 'vue-loading-template';
     import {FileNotFoundError} from "~/types/error";
     // data
     const state = reactive<{
         uploadList: Array<Map<string, string>>
-        selected: string
+        selected: string,
+        isLoading: boolean,
+        modalSelect: string
     }>({
         uploadList: [],
-        selected: ''
+        selected: '',
+        isLoading: false,
+        modalSelect: ''
     });
 
     const updateFileList = async (): Promise<void> => {
-        const res = await axios.get('/api/list?prefix=' + state.selected);
+        const res = await axios.get('/api/list', {
+            params: {
+                prefix: state.selected
+            }
+        });
         if (res.status === 200) {
             state.uploadList = res.data.fileList;
         }
@@ -83,6 +99,9 @@
         propHello: string;
     };
     export default createComponent({
+        components: {
+            VueLoading
+        },
         props: {
             propHello: {
                 type: String
@@ -92,7 +111,9 @@
             // props
             const propsHello = props.propHello;
             const toast = ctx.root.$root.$toast;
+            const modal = ctx.root.$root.$modal;
             const doDownload = async (filePath: string): Promise<void> => {
+                state.isLoading = true;
                 try{
                     const blob = await downloadFile(filePath);
                     const link = document.createElement('a');
@@ -100,20 +121,55 @@
                     const filename = filePath.match(".+/(.+?)([\?#;].*)?$")[1];
                     link.download = filename;
                     link.click();
+                    state.isLoading = false;
                 } catch (e) {
                     if (e instanceof FileNotFoundError) {
                         console.log(toast);
+                        state.isLoading = false;
                         toast.global.nofileError();
                     } else {
+                        state.isLoading = false;
                         toast.global.unknownError();
                     }
                 }
+            };
+            const doDeleteFile = async (): Promise<void> => {
+                modal.hide('dialog');
+                let statusCode = 404;
+                const res = await axios.post('/api/delete', {
+                    key: state.modalSelect
+                }).then((response) => {
+                    statusCode = response.status;
+                    toast.global.allSuccessDelete();
+                }).catch((err) => {
+                    statusCode = err.response.status;
+                    toast.global.unknownError();
+                });
+            };
+            const doComfirmDelete = (filePath: string) => {
+                state.modalSelect = filePath;
+                modal.show('dialog', {
+                    title: '確認',
+                    text: '本当に削除していいですか？',
+                    buttons: [
+                        {
+                            title: 'Yes',
+                            handler: () => { doDeleteFile() }
+                        },
+                        {
+                            title: 'No',
+                            default: true,
+                        },
+                    ]
+                });
             };
             return {
                 state,
                 propsHello,
                 updateFileList,
-                doDownload
+                doDownload,
+                doDeleteFile,
+                doComfirmDelete
             };
         }
     });
@@ -170,7 +226,7 @@
     tbody tr:hover th {
         background: #f4fbff;
     }
-    button {
+    .download-button {
         border: none;
         border-radius: 20px;
         position: relative;
@@ -180,5 +236,21 @@
         background: #0099e4;
         color: #fff;
         cursor: pointer;
+    }
+    .delete-button {
+        border: none;
+        border-radius: 20px;
+        position: relative;
+        top: 7px;
+        left: 2px;
+        line-height: 24px;
+        padding: 0 8px;
+        background: #e45856;
+        color: #fff;
+        cursor: pointer;
+    }
+    #post-file-loader {
+        position: relative;
+        top: 10px;
     }
 </style>
