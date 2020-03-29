@@ -1,0 +1,10 @@
+[basic]
+port = "8585"
+
+[auth]
+username = "test"
+password = "test"
+
+[aws]
+region = "ap-southeast-2"
+bucket_name = "test-test"

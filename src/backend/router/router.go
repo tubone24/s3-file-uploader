@@ -1,15 +1,19 @@
 package router
 
 import (
+	"crypto/subtle"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
+	"github.com/tubone24/s3-file-uploader/src/backend/config"
 	"github.com/tubone24/s3-file-uploader/src/backend/logic"
+	"github.com/tubone24/s3-file-uploader/src/backend/utils"
 	"gopkg.in/go-playground/validator.v9"
 	"net/http"
 )
 
 func New() *echo.Echo {
+	appConfig := config.GetConfig()
 	e := echo.New()
 	e.Logger.SetLevel(log.DEBUG)
 	e.Pre(middleware.RemoveTrailingSlash())
@@ -18,6 +22,13 @@ func New() *echo.Echo {
 		AllowOrigins: []string{"*"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
 		AllowMethods: []string{echo.GET, echo.HEAD, echo.POST},
+	}))
+	e.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
+		if subtle.ConstantTimeCompare([]byte(username), []byte(appConfig.BasicAuth.UserName)) == 1 &&
+			subtle.ConstantTimeCompare([]byte(password), []byte(appConfig.BasicAuth.Password)) == 1 {
+			return true, nil
+		}
+		return false, nil
 	}))
 	initRouting(e)
 	e.Validator = &CustomValidator{validator: validator.New()}
@@ -66,7 +77,7 @@ func list(c echo.Context) (err error) {
 func download(c echo.Context) (err error) {
 	key := c.QueryParam("key")
 	fileBytes, err := logic.DownloadFileToS3(key)
-	contentType := logic.GetContentType(key)
+	contentType := utils.GetContentType(key)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "error")
 	}

@@ -3,6 +3,7 @@ module github.com/tubone24/s3-file-uploader
 go 1.12
 
 require (
+	github.com/BurntSushi/toml v0.3.1
 	github.com/aws/aws-sdk-go v1.29.34
 	github.com/go-playground/locales v0.12.1 // indirect
 	github.com/go-playground/universal-translator v0.16.0 // indirect
