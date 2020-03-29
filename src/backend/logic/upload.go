@@ -35,9 +35,10 @@ func UploadFileToS3(fileType string, encodeData string, fileName string) (result
 }
 
 func createPrefix(fileType string) string {
-	if fileType == "test" {
+	switch fileType {
+	case "test1":
 		return "test-test"
-	} else {
-		return "other"
+	default:
+		return fileType
 	}
 }
