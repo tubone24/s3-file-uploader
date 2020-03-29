@@ -3,6 +3,7 @@ package logic
 import (
 	"github.com/labstack/gommon/log"
 	"github.com/tubone24/s3-file-uploader/src/backend/utils/aws"
+	"strings"
 )
 
 func ListObjects (prefix string) ([]map[string]string, error){
@@ -14,6 +15,9 @@ func ListObjects (prefix string) ([]map[string]string, error){
 		return objectList, err
 	}
 	for _, item := range resp {
+		if strings.HasSuffix(item.Name, "/") {
+			continue
+		}
 		objectList = append(objectList, item.ConvertS3FileObjectInfoToMap())
 	}
 	return objectList, nil
