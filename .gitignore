@@ -12,8 +12,10 @@ log-uploader
 # go modules
 *.sum
 
-# front build
+# config
+src/backend/config/env/*.toml
 
+# front build
 src/backend/assets/*
 
 # npm
