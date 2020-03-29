@@ -16,7 +16,7 @@ backend-install:
 
 backend-build:
 	cd src/backend && \
-	go build -o ../log-uploader
+	go build -o ../../log-uploader
 
 backend-run:
 	cd src/backend && \
