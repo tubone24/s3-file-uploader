@@ -1,0 +1,20 @@
+package logic
+
+import (
+	"github.com/labstack/gommon/log"
+	"github.com/tubone24/s3-file-uploader/src/backend/utils/aws"
+)
+
+func ListObjects (prefix string) ([]map[string]string, error){
+	var objectList []map[string]string
+	s3 := aws.GetS3Instance()
+	resp, err := s3.ListObject(BucketName, prefix)
+	if err != nil {
+		log.Error(err)
+		return objectList, err
+	}
+	for _, item := range resp {
+		objectList = append(objectList, item.ConvertS3FileObjectInfoToMap())
+	}
+	return objectList, nil
+}

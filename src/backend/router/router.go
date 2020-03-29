@@ -28,6 +28,7 @@ func initRouting(e *echo.Echo){
 	e.Static("/", "assets")
 	e.GET("/status", status)
 	e.POST("/upload", upload)
+	e.GET("/list", list)
 }
 
 func status(c echo.Context) error {
@@ -50,4 +51,13 @@ func upload(c echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusInternalServerError, result)
 	}
 	return c.JSON(http.StatusOK, map[string]string{"fileType": data.FileType, "fileName": data.FileName})
+}
+
+func list(c echo.Context) (err error) {
+	prefix := c.QueryParam("prefix")
+	result, err := logic.ListObjects(prefix)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "error")
+	}
+	return c.JSON(http.StatusOK, result)
 }

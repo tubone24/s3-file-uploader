@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"os"
+	"strconv"
 )
 
 type S3 struct {
@@ -51,4 +52,32 @@ func (s *S3) UploadFile(bucket string, filePath string, key string, contentType 
 		return err
 	}
 	return nil
+}
+
+func (s *S3) ListObject(bucket string, prefix string) ([]S3FileObjectInfo, error){
+	var objectList []S3FileObjectInfo
+	params := &s3.ListObjectsInput{
+		Bucket: aws.String(bucket),
+		Prefix: aws.String(prefix),
+	}
+	resp, err := s.client.ListObjects(params)
+	if err != nil {
+		return objectList, err
+	}
+
+	for _, item := range resp.Contents {
+		o := S3FileObjectInfo{*item.Key, item.LastModified.String(), *item.Size}
+		objectList = append(objectList, o)
+	}
+	return objectList, nil
+}
+
+type S3FileObjectInfo struct {
+	Name string
+	LastModified string
+	Size int64
+}
+
+func (s *S3FileObjectInfo )ConvertS3FileObjectInfoToMap() map[string]string{
+	return map[string]string{"name": s.Name, "lastModified": s.LastModified, "size": strconv.FormatInt(s.Size, 10)}
 }
