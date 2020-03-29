@@ -37,7 +37,8 @@ func status(c echo.Context) error {
 func upload(c echo.Context) (err error) {
 	data := new(Data)
 	if err = c.Bind(data); err != nil {
-		return err
+		log.Error(err)
+		return echo.NewHTTPError(http.StatusBadRequest, "failed bind data")
 	}
 	if err = c.Validate(data); err != nil {
 		//return c.JSON(http.StatusBadRequest, map[string]string{"error": "BadRequest", "message": "invalid payload"})
