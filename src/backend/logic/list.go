@@ -6,13 +6,13 @@ import (
 	"strings"
 )
 
-func ListObjects (prefix string) ([]map[string]string, error){
+func ListObjects (prefix string) (map[string][]map[string]string, error){
 	var objectList []map[string]string
 	s3 := aws.GetS3Instance()
 	resp, err := s3.ListObject(BucketName, prefix)
 	if err != nil {
 		log.Error(err)
-		return objectList, err
+		return map[string][]map[string]string{"fileList": objectList}, err
 	}
 	for _, item := range resp {
 		if strings.HasSuffix(item.Name, "/") {
@@ -20,5 +20,6 @@ func ListObjects (prefix string) ([]map[string]string, error){
 		}
 		objectList = append(objectList, item.ConvertS3FileObjectInfoToMap())
 	}
-	return objectList, nil
+	returnMap := map[string][]map[string]string{"fileList": objectList}
+	return returnMap, nil
 }
