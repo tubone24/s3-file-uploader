@@ -2,6 +2,7 @@ package logic
 
 import (
 	"encoding/base64"
+	"github.com/labstack/gommon/log"
 	"github.com/tubone24/s3-file-uploader/src/backend/utils/aws"
 	"io/ioutil"
 	"os"
@@ -26,8 +27,10 @@ func UploadFileToS3(fileType string, encodeData string, fileName string) (result
 	key := createPrefix(fileType) + "/" + fileName
 	err = s3.UploadFile(BucketName, tempFile.Name(), key, ContentTypeCsv)
 	if err != nil {
+		log.Error(err)
 		return "failed put file to S3", err
 	}
+	log.Info("upload file: " + key)
 	return "success", nil
 }
 

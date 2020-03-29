@@ -2,7 +2,7 @@
   <div class="app">
     <particles-bg type="circle" :bg="true" :canvas="canvasObject"/>
     <div id="nav">
-      <nuxt-link to="/">Home</nuxt-link>
+      <nuxt-link to="/">ログアップローダー</nuxt-link>
     </div>
     <nuxt/>
   </div>

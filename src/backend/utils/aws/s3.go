@@ -50,6 +50,5 @@ func (s *S3) UploadFile(bucket string, filePath string, key string, contentType 
 	if err != nil {
 		return err
 	}
-
 	return nil
 }

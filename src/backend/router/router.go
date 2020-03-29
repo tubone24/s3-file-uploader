@@ -40,11 +40,13 @@ func upload(c echo.Context) (err error) {
 		return err
 	}
 	if err = c.Validate(data); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "BadRequest", "message": "invalid payload"})
+		//return c.JSON(http.StatusBadRequest, map[string]string{"error": "BadRequest", "message": "invalid payload"})
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid payload")
 	}
 	result, err := logic.UploadFileToS3(data.FileType, data.Data, data.FileName)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "InternalServerError", "message": result})
+		//return c.JSON(http.StatusInternalServerError, map[string]string{"error": "InternalServerError", "message": result})
+		return echo.NewHTTPError(http.StatusInternalServerError, result)
 	}
 	return c.JSON(http.StatusOK, map[string]string{"fileType": data.FileType, "fileName": data.FileName})
 }
