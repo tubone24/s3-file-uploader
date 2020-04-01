@@ -43,6 +43,8 @@ func UploadFileToS3(fileType string, gzippedEncodeData string, fileName string) 
 	}
 
 	tempFile.Write(EncodeDataBuffer.Bytes())
+	defer EncodeDataBuffer.Reset()
+	defer gzippedEncodeDataBuffer.Reset()
 	defer tempFile.Close()
 
 	s3 := aws.GetS3Instance()
