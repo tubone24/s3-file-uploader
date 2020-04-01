@@ -4,7 +4,7 @@
       <b-field>
       <b-select id="format-select" v-model="state.selected">
         <option disabled value="">ファイル種類選択</option>
-        <option value="test1">test1</option>
+        <option value="test">test</option>
       </b-select>
         </b-field>
     </div>
@@ -14,9 +14,16 @@
       </div>
       <div v-if="state.isLoading">
         <div v-show="state.isLoading" id="post-file-loader">
-          <vue-loading type="spiningDubbles" color="#333" :size="{ width: '200px', height: '200px' }"></vue-loading>
+          <vue-loading type="bars" color="#42f54e" :size="{ width: '200px', height: '200px' }"></vue-loading>
+          アップロード中...
         </div>
       </div>
+    <div v-if="state.isCompressing">
+      <div v-show="state.isCompressing" id="compress-file-loader">
+        <vue-loading type="bars" color="#0099e4" :size="{ width: '200px', height: '200px' }"></vue-loading>
+        圧縮中...
+      </div>
+    </div>
       <div v-if="state.selected && state.file">
         <b-button id="post-file" type="is-primary" @click="postFile">送信</b-button>
       </div>
@@ -36,6 +43,7 @@
   import axios from 'axios';
   import toast from '@nuxtjs/toast';
   import { VueLoading } from 'vue-loading-template';
+  import { gzipSync } from 'zlib';
 
   // data
   const state = reactive<{
@@ -43,11 +51,13 @@
     fileName: string,
     selected: string;
     isLoading: boolean;
+    isCompressing: boolean;
   }>({
     file: '',
     fileName: '',
     selected: '',
-    isLoading: false
+    isLoading: false,
+    isCompressing: false
   });
 
   const onFileChange = async (e: any): Promise<void> => {
@@ -55,20 +65,39 @@
     if (!files.length) {
       return;
     }
-    state.fileName = e.target.files[0].name || e.dataTransfer.files[0].name;
-    await createFile(files[0]);
+    state.fileName = files[0].name;
+    await gzipCompressFile(files[0]);
+    // await createFile(file);
   };
 
-  const createFile = async (file: Blob): Promise<void> => {
+  const gzipCompressFile = async (file: Blob): Promise<void> => {
+    state.file = '';
+    state.fileName = '';
+    state.isCompressing = true;
     const reader = new FileReader();
     reader.onload = (e: any) => {
-      state.file = e.target.result;
+      state.file = gzipSync(Buffer.from(e.target.result)).toString('base64');
+      state.isCompressing = false;
     };
     return new Promise((resolve, reject) => {
-      reader.readAsDataURL(file);
+      reader.readAsArrayBuffer(file);
       return resolve();
     });
   };
+
+  // const createFile = async (file: Blob): Promise<void> => {
+  //   state.file = '';
+  //   const reader = new FileReader();
+  //   reader.onload = (e: any) => {
+  //     state.file = e.target.result;
+  //     delete e.target.result;
+  //     console.log(state.file);
+  //   };
+  //   return new Promise((resolve, reject) => {
+  //     reader.readAsDataURL(file);
+  //     return resolve();
+  //   });
+  // };
 
   export default createComponent({
     components: {

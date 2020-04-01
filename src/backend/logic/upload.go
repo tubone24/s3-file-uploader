@@ -1,6 +1,8 @@
 package logic
 
 import (
+	"bytes"
+	"compress/gzip"
 	"encoding/base64"
 	"github.com/labstack/gommon/log"
 	"github.com/tubone24/s3-file-uploader/src/backend/config"
@@ -11,9 +13,9 @@ import (
 )
 
 
-func UploadFileToS3(fileType string, encodeData string, fileName string) (result string, err error) {
+func UploadFileToS3(fileType string, gzippedEncodeData string, fileName string) (result string, err error) {
 	appConfig := config.GetConfig()
-	data, err := base64.StdEncoding.DecodeString(strings.Replace(encodeData, "data:text/csv;base64,", "", 1))
+	data, err := base64.StdEncoding.DecodeString(strings.Replace(gzippedEncodeData, "data:text/csv;base64,", "", 1))
 	if err != nil {
 		return "failed decode Data", err
 	}
@@ -22,7 +24,25 @@ func UploadFileToS3(fileType string, encodeData string, fileName string) (result
 		return "failed create tmpfile", err
 	}
 
-	tempFile.Write(data)
+	var gzippedEncodeDataBuffer bytes.Buffer
+	_, err = gzippedEncodeDataBuffer.Write(data)
+	if err != nil {
+		log.Error(err)
+		return "", err
+	}
+	EncodeDataBuffer := bytes.Buffer{}
+	reader, err := gzip.NewReader(&gzippedEncodeDataBuffer)
+	if err != nil {
+		log.Error(err)
+		return "", err
+	}
+	_, err = EncodeDataBuffer.ReadFrom(reader)
+	if err != nil {
+		log.Error(err)
+		return "", err
+	}
+
+	tempFile.Write(EncodeDataBuffer.Bytes())
 	defer tempFile.Close()
 
 	s3 := aws.GetS3Instance()

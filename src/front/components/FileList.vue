@@ -4,7 +4,7 @@
             <b-field>
                 <b-select id="format-select" v-model="state.selected">
                     <option disabled value="">ファイル種類選択</option>
-                    <option value="test-test">test-test</option>
+                    <option value="test">test</option>
                 </b-select>
             </b-field>
             <div v-if="state.selected">
@@ -14,6 +14,7 @@
         <div v-if="state.isLoading">
             <div v-show="state.isLoading" id="post-file-loader">
                 <vue-loading type="bars" color="#0099e4" :size="{ width: '200px', height: '100px' }"></vue-loading>
+                ダウンロード中...
             </div>
         </div>
         <div class="file-table">
@@ -76,7 +77,7 @@
         if (res.status === 200) {
             state.uploadList = res.data.fileList;
         }
-        console.log(JSON.stringify(state.uploadList));
+        //console.log(JSON.stringify(state.uploadList));
     };
 
     const downloadFile = async (filePath: string): Promise<Blob> => {
@@ -145,6 +146,7 @@
                     statusCode = err.response.status;
                     toast.global.unknownError();
                 });
+                await updateFileList();
             };
             const doComfirmDelete = (filePath: string) => {
                 state.modalSelect = filePath;

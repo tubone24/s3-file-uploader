@@ -15,6 +15,7 @@ type BasicConfig struct {
 type AwsConfig struct {
 	Region      string `toml:"region"`
 	BucketName  string `toml:"bucket_name"`
+	DynamoDBLastKeyTable string `toml:"dynamodb_lastkey_table"`
 }
 
 type BasicAuthConfig struct {
