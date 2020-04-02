@@ -14,6 +14,7 @@ import (
 
 
 func UploadFileToS3(fileType string, gzippedEncodeData string, fileName string) (result string, err error) {
+	log.Info("start upload file to s3: " + fileType + "/" + fileName)
 	appConfig := config.GetConfig()
 	data, err := base64.StdEncoding.DecodeString(strings.Replace(gzippedEncodeData, "data:text/csv;base64,", "", 1))
 	if err != nil {
@@ -28,23 +29,29 @@ func UploadFileToS3(fileType string, gzippedEncodeData string, fileName string) 
 	_, err = gzippedEncodeDataBuffer.Write(data)
 	if err != nil {
 		log.Error(err)
-		return "", err
+		return "failed write gzipEncodeData buffer", err
 	}
 	EncodeDataBuffer := bytes.Buffer{}
 	reader, err := gzip.NewReader(&gzippedEncodeDataBuffer)
 	if err != nil {
 		log.Error(err)
-		return "", err
+		return "failed gunzip gzipEncodeData buffer", err
 	}
 	_, err = EncodeDataBuffer.ReadFrom(reader)
 	if err != nil {
 		log.Error(err)
-		return "", err
+		return "failed write EncodeDataBuffer", err
 	}
 
 	tempFile.Write(EncodeDataBuffer.Bytes())
-	defer EncodeDataBuffer.Reset()
-	defer gzippedEncodeDataBuffer.Reset()
+	log.Debug("Write file to TMP: " + tempFile.Name())
+	err = reader.Close()
+	if err != nil {
+		log.Error(err)
+		return "failed reader close", err
+	}
+	EncodeDataBuffer.Reset()
+	gzippedEncodeDataBuffer.Reset()
 	defer tempFile.Close()
 
 	s3 := aws.GetS3Instance()

@@ -64,16 +64,16 @@ func status(c echo.Context) error {
 func upload(c echo.Context) (err error) {
 	data := new(UploadData)
 	if err = c.Bind(data); err != nil {
-		log.Error(err)
+		c.Logger().Error(err)
 		return echo.NewHTTPError(http.StatusBadRequest, "failed bind data")
 	}
 	if err = c.Validate(data); err != nil {
-		//return c.JSON(http.StatusBadRequest, map[string]string{"error": "BadRequest", "message": "invalid payload"})
+		c.Logger().Error(err)
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid payload")
 	}
 	result, err := logic.UploadFileToS3(data.FileType, data.Data, data.FileName)
 	if err != nil {
-		//return c.JSON(http.StatusInternalServerError, map[string]string{"error": "InternalServerError", "message": result})
+		c.Logger().Error(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, result)
 	}
 	return c.JSON(http.StatusOK, map[string]string{"fileType": data.FileType, "fileName": data.FileName})
@@ -83,6 +83,7 @@ func list(c echo.Context) (err error) {
 	prefix := c.QueryParam("prefix")
 	result, err := logic.ListObjects(prefix)
 	if err != nil {
+		c.Logger().Error(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, "error")
 	}
 	return c.JSON(http.StatusOK, result)
@@ -93,6 +94,7 @@ func download(c echo.Context) (err error) {
 	fileBytes, err := logic.DownloadFileToS3(key)
 	contentType := utils.GetContentType(key)
 	if err != nil {
+		c.Logger().Error(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, "error")
 	}
 	return c.Blob(http.StatusOK, contentType, fileBytes)
@@ -101,16 +103,16 @@ func download(c echo.Context) (err error) {
 func deleteFile(c echo.Context) (err error) {
 	data := new(DeletePayload)
 	if err = c.Bind(data); err != nil {
-		log.Error(err)
+		c.Logger().Error(err)
 		return echo.NewHTTPError(http.StatusBadRequest, "failed bind data")
 	}
 	if err = c.Validate(data); err != nil {
-		//return c.JSON(http.StatusBadRequest, map[string]string{"error": "BadRequest", "message": "invalid payload"})
+		c.Logger().Error(err)
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid payload")
 	}
 	err = logic.DeleteFileToS3(data.Key)
 	if err != nil {
-		//return c.JSON(http.StatusInternalServerError, map[string]string{"error": "InternalServerError", "message": result})
+		c.Logger().Error(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, "error...")
 	}
 	return c.JSON(http.StatusOK, map[string]string{"fileName": data.Key})

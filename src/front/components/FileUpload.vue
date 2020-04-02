@@ -65,14 +65,13 @@
     if (!files.length) {
       return;
     }
-    state.fileName = files[0].name;
+    state.fileName = e.target.files[0].name || e.dataTransfer.files[0].name;
     await gzipCompressFile(files[0]);
     // await createFile(file);
   };
 
   const gzipCompressFile = async (file: Blob): Promise<void> => {
     state.file = '';
-    state.fileName = '';
     state.isCompressing = true;
     const reader = new FileReader();
     reader.onload = (e: any) => {
@@ -121,6 +120,8 @@
           toast.global.unknownError();
         });
         state.isLoading = false;
+        state.file = '';
+        state.fileName = '';
       };
 
 
