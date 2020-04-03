@@ -1,4 +1,7 @@
-on: [push]
+on: 
+  push:
+    branches:
+      - master
 
 jobs:
   hello_world_job:
@@ -10,4 +13,6 @@ jobs:
       - name: docker login
         run: docker login docker.pkg.github.com -u tubone24 -p ${{ secrets.GITHUB_TOKEN }}
       - name: docker build
-        run: docker build -t log-uploader .
+        run: docker build -t docker.pkg.github.com/tubone24/s3-file-uploader/log-uploader .
+      - name: docker push
+        run: docker push docker.pkg.github.com/tubone24/s3-file-uploader/log-uploader
