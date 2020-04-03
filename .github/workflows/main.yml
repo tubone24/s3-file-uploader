@@ -8,4 +8,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: docker login
-        run: docker login docker.pkg.github.com -u tubone24
+        run: docker login docker.pkg.github.com
