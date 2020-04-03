@@ -18,25 +18,48 @@
             </div>
         </div>
         <div class="file-table">
-        <table>
-            <thead>
-            <tr>
-                <th class="filepath">ファイル名</th>
-                <th class="updated">更新日時</th>
-                <th class="size">サイズ</th>
-                <th class="download">-</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="item in state.uploadList">
-                <th>{{ item.name }}</th>
-                <th>{{ item.lastModified }}</th>
-                <th>{{ item.size }}</th>
-                <button class="download-button" v-on:click="doDownload(item.name)">DL</button>
-                <button class="delete-button" v-on:click="doComfirmDelete(item.name)">DEL</button>
-            </tr>
-            </tbody>
-        </table>
+            <b-table
+               :data="state.uploadList"
+               :paginated="true"
+               :pagination-position="bottom"
+               :default-sort="updated"
+               :sticky-header="stickyHeaders"
+            >
+              <template slot-scope="uploadList">
+                <b-table-column fileld="filename" label="ファイル名" width="120" sortable>
+                  {{uploadList.row.name}}
+                </b-table-column>
+                <b-table-column fileld="updated" label="更新日時" width="120" sortable>
+                  {{uploadList.row.lastModified}}
+                </b-table-column>
+                <b-table-column fileld="size" label="サイズ" width="100" sortable>
+                  {{uploadList.row.size}}
+                </b-table-column>
+                <b-table-column fileld="download" label="-" width="100" sortable>
+                  <button class="download-button" v-on:click="doDownload(uploadList.row.name)">DL </button>
+                  <button class="delete-button" v-on:click="doComfirmDelete(uploadList.row.name)">DEL</button>
+                </b-table-column>
+              </template>
+            </b-table>
+<!--        <table>-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th class="filepath">ファイル名</th>-->
+<!--                <th class="updated">更新日時</th>-->
+<!--                <th class="size">サイズ</th>-->
+<!--                <th class="download">-</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            <tr v-for="item in state.uploadList">-->
+<!--                <th>{{ item.name }}</th>-->
+<!--                <th>{{ item.lastModified }}</th>-->
+<!--                <th>{{ item.size }}</th>-->
+<!--                <button class="download-button" v-on:click="doDownload(item.name)">DL</button>-->
+<!--                <button class="delete-button" v-on:click="doComfirmDelete(item.name)">DEL</button>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--        </table>-->
         </div>
         <v-dialog/>
     </div>
@@ -189,44 +212,48 @@
         position: relative;
         top: 100px;
     }
-    table {
-        width: 110%;
-        border-collapse: collapse;
-    }
-    thead th {
-        border-bottom: 2px solid #55aa42; /*#d31c4a */
-        color: #429c43;
-    }
-    th,
-    th {
-        padding: 0 8px;
-        line-height: 40px;
-    }
-    thead th.id {
-        width: 50px;
-    }
-    thead th.state {
-        width: 100px;
-    }
-    thead th.button {
-        width: 60px;
-    }
-    tbody td.button, tbody td.state {
+    /*table {*/
+    /*    width: 110%;*/
+    /*    border-collapse: collapse;*/
+    /*}*/
+    /*thead th {*/
+    /*    border-bottom: 2px solid #55aa42; !*#d31c4a *!*/
+    /*    color: #429c43;*/
+    /*}*/
+    /*th,*/
+    /*th {*/
+    /*    padding: 0 8px;*/
+    /*    line-height: 40px;*/
+    /*}*/
+    /*thead th.id {*/
+    /*    width: 50px;*/
+    /*}*/
+    /*thead th.state {*/
+    /*    width: 100px;*/
+    /*}*/
+    /*thead th.button {*/
+    /*    width: 60px;*/
+    /*}*/
+    /*tbody td.button, tbody td.state {*/
+    /*    text-align: center;*/
+    /*}*/
+    /*tbody tr td,*/
+    /*tbody tr th {*/
+    /*    border-bottom: 1px solid #ccc;*/
+    /*    transition: all 0.4s;*/
+    /*}*/
+    /*tbody tr.done td,*/
+    /*tbody tr.done th {*/
+    /*    background: #f8f8f8;*/
+    /*    color: #bbb;*/
+    /*}*/
+    /*tbody tr:hover td,*/
+    /*tbody tr:hover th {*/
+    /*    background: #f4fbff;*/
+    /*}*/
+    .table {
         text-align: center;
-    }
-    tbody tr td,
-    tbody tr th {
-        border-bottom: 1px solid #ccc;
-        transition: all 0.4s;
-    }
-    tbody tr.done td,
-    tbody tr.done th {
-        background: #f8f8f8;
-        color: #bbb;
-    }
-    tbody tr:hover td,
-    tbody tr:hover th {
-        background: #f4fbff;
+        font-weight: bold;
     }
     .download-button {
         border: none;
