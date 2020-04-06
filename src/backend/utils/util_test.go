@@ -23,9 +23,17 @@ func TestGetContentType(t *testing.T) {
 		{"test.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"},
 		{"test.zip", "application/zip"},
 		{"test.lzh", "application/x-lzh"},
-		//{"test.tar.gz", "application/x-tar"},
+		{"test.tar.gz", "application/x-tar"},
 		{"test.tgz", "application/x-tar"},
 		{"test.tar", "application/x-tar"},
+		{"test.bz", "application/x-bzip"},
+		{"test.bz2", "application/x-bzip2"},
+		{"test.gz", "application/gzip"},
+		{"test.rar", "application/vnd.rar"},
+		{"test.7z", "application/x-7z-compressed"},
+		{"test.xml", "application/xml"},
+		{"test.bin", "application/octet-stream"},
+		{"test.mse", "application/x-www-form-urlencoded"},
 	}
 
 	for idx, pattern := range patterns {

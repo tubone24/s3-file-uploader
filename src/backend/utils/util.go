@@ -1,11 +1,18 @@
 package utils
 
-import "strings"
+import (
+	"path/filepath"
+	"strings"
+)
 
 func GetContentType(key string) string {
-	pos := strings.LastIndex(key, ".")
+	//pos := strings.LastIndex(key, ".")
 
-	ext := key[pos:]
+	if strings.HasSuffix(key, ".tar.gz") {
+		return "application/x-tar"
+	}
+
+	ext := filepath.Ext(key)
 
 	switch ext {
 	case ".txt":
