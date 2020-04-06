@@ -6,7 +6,11 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
-type DynamoDB struct {
+type DynamoDB interface {
+	Scan(string) ([]map[string]*dynamodb.AttributeValue, error)
+}
+
+type DynamoDBImpl struct {
 	client *dynamodb.DynamoDB
 }
 
@@ -14,13 +18,13 @@ var dynamoSession = session.Must(session.NewSessionWithOptions(session.Options{
 	SharedConfigState: session.SharedConfigEnable,
 }))
 
-var dynamoDBInstance = &DynamoDB{client: dynamodb.New(dynamoSession)}
+var dynamoDBInstance = &DynamoDBImpl{client: dynamodb.New(dynamoSession)}
 
-func GetDynamoDBInstance() *DynamoDB {
+func GetDynamoDBInstance() *DynamoDBImpl {
 	return dynamoDBInstance
 }
 
-func (d *DynamoDB) Scan(tableName string) ([]map[string]*dynamodb.AttributeValue, error) {
+func (d *DynamoDBImpl) Scan(tableName string) ([]map[string]*dynamodb.AttributeValue, error) {
 	params := &dynamodb.ScanInput{
 		TableName: &tableName,
 	}

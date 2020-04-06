@@ -7,6 +7,7 @@ require (
 	github.com/aws/aws-sdk-go v1.29.34
 	github.com/go-playground/locales v0.12.1 // indirect
 	github.com/go-playground/universal-translator v0.16.0 // indirect
+	github.com/golang/mock v1.4.3
 	github.com/jmespath/go-jmespath v0.3.0 // indirect
 	github.com/jung-kurt/gofpdf v1.7.0
 	github.com/labstack/echo v3.3.10+incompatible
@@ -15,6 +16,7 @@ require (
 	github.com/leodido/go-urn v1.1.0 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
+	github.com/stretchr/testify v1.5.1
 	github.com/yuin/goldmark v1.1.26 // indirect
 	golang.org/x/crypto v0.0.0-20200323165209-0ec3e9974c59 // indirect
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e // indirect

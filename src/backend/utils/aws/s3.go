@@ -10,9 +10,22 @@ import (
 	"time"
 )
 
-type S3 struct {
+type S3 interface {
+	UploadFile(bucket string, filePath string, key string, contentType string) error
+	ListObject(bucket string, prefix string) ([]S3FileObjectInfo, error)
+	DownloadFile(bucket string, key string) ([]byte, error)
+	DeleteObject(bucket string, key string) error
+}
+
+type S3Impl struct {
 	client *s3.S3
 	session *session.Session
+}
+
+type S3FileObjectInfo struct {
+	Name string
+	LastModified string
+	Size int64
 }
 
 //var s3Session = session.Must(session.NewSession(
@@ -26,13 +39,13 @@ var s3Session = session.Must(session.NewSessionWithOptions(session.Options{
 	SharedConfigState: session.SharedConfigEnable,
 }))
 
-var s3Instance = &S3{client:s3.New(s3Session)}
+var s3Instance = &S3Impl{client:s3.New(s3Session)}
 
-func GetS3Instance() *S3 {
+func GetS3Instance() *S3Impl {
 	return s3Instance
 }
 
-func (s *S3) UploadFile(bucket string, filePath string, key string, contentType string) error {
+func (s *S3Impl) UploadFile(bucket string, filePath string, key string, contentType string) error {
 	var file, err = os.Open(filePath)
 	if err != nil {
 		return err
@@ -55,7 +68,7 @@ func (s *S3) UploadFile(bucket string, filePath string, key string, contentType 
 	return nil
 }
 
-func (s *S3) ListObject(bucket string, prefix string) ([]S3FileObjectInfo, error){
+func (s *S3Impl) ListObject(bucket string, prefix string) ([]S3FileObjectInfo, error){
 	var objectList []S3FileObjectInfo
 	params := &s3.ListObjectsInput{
 		Bucket: aws.String(bucket),
@@ -75,17 +88,11 @@ func (s *S3) ListObject(bucket string, prefix string) ([]S3FileObjectInfo, error
 	return objectList, nil
 }
 
-type S3FileObjectInfo struct {
-	Name string
-	LastModified string
-	Size int64
-}
-
 func (s *S3FileObjectInfo )ConvertS3FileObjectInfoToMap() map[string]string{
 	return map[string]string{"name": s.Name, "lastModified": s.LastModified, "size": strconv.FormatInt(s.Size, 10) + "B"}
 }
 
-func (s *S3) DownloadFile(bucket string, key string) ([]byte, error) {
+func (s *S3Impl) DownloadFile(bucket string, key string) ([]byte, error) {
 	downloader := s3manager.NewDownloader(s3Session)
 	params := &s3.GetObjectInput{
 		Bucket: aws.String(bucket),
@@ -104,7 +111,7 @@ func (s *S3) DownloadFile(bucket string, key string) ([]byte, error) {
 	return fileBytes, nil
 }
 
-func (s *S3) DeleteObject(bucket string, key string) error {
+func (s *S3Impl) DeleteObject(bucket string, key string) error {
 	params := &s3.DeleteObjectInput{
 		Bucket:aws.String(bucket),
 		Key:aws.String(key),
