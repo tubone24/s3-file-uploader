@@ -24,6 +24,8 @@ func TestGetContentType(t *testing.T) {
 		{"test.zip", "application/zip"},
 		{"test.lzh", "application/x-lzh"},
 		//{"test.tar.gz", "application/x-tar"},
+		{"test.tgz", "application/x-tar"},
+		{"test.tar", "application/x-tar"},
 	}
 
 	for idx, pattern := range patterns {

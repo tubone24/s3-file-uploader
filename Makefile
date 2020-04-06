@@ -21,3 +21,7 @@ backend-build:
 backend-run:
 	cd src/backend && \
 	go run main.go
+
+backend-test:
+	cd src/backend && \
+	go test -v ./...
