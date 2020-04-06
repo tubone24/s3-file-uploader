@@ -22,3 +22,9 @@ jobs:
 
     - name: Get dependencies
       run: make backend-install
+
+    - name: Go Build
+      run: make backend-build
+
+    - name: Go Test
+      run: make backend-test
