@@ -38,8 +38,8 @@ func NewConfig(env string) (Config, error) {
 	return conf, nil
 }
 
-func GetConfig() Config {
-	return conf
+func GetConfig() *Config {
+	return &conf
 }
 
 

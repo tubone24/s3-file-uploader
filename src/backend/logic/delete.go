@@ -1,16 +1,16 @@
 package logic
 
-import (
-	"github.com/tubone24/s3-file-uploader/src/backend/config"
-	"github.com/tubone24/s3-file-uploader/src/backend/utils/aws"
-)
+import "github.com/labstack/gommon/log"
 
-func DeleteFileToS3(fileKey string) error {
-	appConfig := config.GetConfig()
-	s3 := aws.GetS3Instance()
-	err := s3.DeleteObject(appConfig.Aws.BucketName, fileKey)
+func (i *Impl)DeleteFileToS3(fileKey string) error {
+	err := i.deleteObject(fileKey)
 	if err != nil {
+		log.Error(err)
 		return err
 	}
 	return nil
+}
+
+func (i *Impl)deleteObject(fileKey string) error {
+	return i.s3.DeleteObject(i.appConfig.Aws.BucketName, fileKey)
 }

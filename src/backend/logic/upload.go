@@ -5,17 +5,14 @@ import (
 	"compress/gzip"
 	"encoding/base64"
 	"github.com/labstack/gommon/log"
-	"github.com/tubone24/s3-file-uploader/src/backend/config"
-	"github.com/tubone24/s3-file-uploader/src/backend/utils/aws"
 	"io/ioutil"
 	"os"
 	"strings"
 )
 
 
-func UploadFileToS3(fileType string, gzippedEncodeData string, fileName string) (result string, err error) {
+func (i *Impl)UploadFileToS3(fileType string, gzippedEncodeData string, fileName string) (result string, err error) {
 	log.Info("start upload file to s3: " + fileType + "/" + fileName)
-	appConfig := config.GetConfig()
 	data, err := base64.StdEncoding.DecodeString(strings.Replace(gzippedEncodeData, "data:text/csv;base64,", "", 1))
 	if err != nil {
 		return "failed decode Data", err
@@ -54,15 +51,18 @@ func UploadFileToS3(fileType string, gzippedEncodeData string, fileName string) 
 	gzippedEncodeDataBuffer.Reset()
 	defer tempFile.Close()
 
-	s3 := aws.GetS3Instance()
 	key := createPrefix(fileType) + "/" + fileName
-	err = s3.UploadFile(appConfig.Aws.BucketName, tempFile.Name(), key, ContentTypeCsv)
+	err = i.uploadFile(tempFile.Name(), key)
 	if err != nil {
 		log.Error(err)
 		return "failed put file to S3", err
 	}
 	log.Info("upload file: " + key)
 	return "success", nil
+}
+
+func (i *Impl)uploadFile(filename string, key string) error {
+	return i.s3.UploadFile(i.appConfig.Aws.BucketName, filename, key, ContentTypeCsv)
 }
 
 func createPrefix(fileType string) string {

@@ -6,7 +6,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"os"
-	"strconv"
 	"time"
 )
 
@@ -86,10 +85,6 @@ func (s *S3Impl) ListObject(bucket string, prefix string) ([]S3FileObjectInfo, e
 		objectList = append(objectList, o)
 	}
 	return objectList, nil
-}
-
-func (s *S3FileObjectInfo )ConvertS3FileObjectInfoToMap() map[string]string{
-	return map[string]string{"name": s.Name, "lastModified": s.LastModified, "size": strconv.FormatInt(s.Size, 10) + "B"}
 }
 
 func (s *S3Impl) DownloadFile(bucket string, key string) ([]byte, error) {

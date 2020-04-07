@@ -13,8 +13,13 @@
         </div>
         <div v-if="state.isLoading">
             <div v-show="state.isLoading" id="post-file-loader">
-                <vue-loading type="bars" color="#0099e4" :size="{ width: '200px', height: '100px' }"></vue-loading>
-                ダウンロード中...
+                <div>
+                  <vue-loading type="bars" color="#0099e4" :size="{ width: '200px', height: '100px' }"></vue-loading>
+                </div>
+                <div>
+                  <p>ダウンロード中...</p>
+                </div>
+
             </div>
         </div>
         <div class="file-table">

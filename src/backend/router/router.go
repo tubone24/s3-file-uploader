@@ -13,6 +13,8 @@ import (
 	"strings"
 )
 
+var logicInstance = logic.New()
+
 func New() *echo.Echo {
 	appConfig := config.GetConfig()
 	e := echo.New()
@@ -71,7 +73,7 @@ func upload(c echo.Context) (err error) {
 		c.Logger().Error(err)
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid payload")
 	}
-	result, err := logic.UploadFileToS3(data.FileType, data.Data, data.FileName)
+	result, err := logicInstance.UploadFileToS3(data.FileType, data.Data, data.FileName)
 	if err != nil {
 		c.Logger().Error(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, result)
@@ -81,7 +83,7 @@ func upload(c echo.Context) (err error) {
 
 func list(c echo.Context) (err error) {
 	prefix := c.QueryParam("prefix")
-	result, err := logic.ListObjects(prefix)
+	result, err := logicInstance.ListObjects(prefix)
 	if err != nil {
 		c.Logger().Error(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, "error")
@@ -91,7 +93,7 @@ func list(c echo.Context) (err error) {
 
 func download(c echo.Context) (err error) {
 	key := c.QueryParam("key")
-	fileBytes, err := logic.DownloadFileToS3(key)
+	fileBytes, err := logicInstance.DownloadFileToS3(key)
 	contentType := utils.GetContentType(key)
 	if err != nil {
 		c.Logger().Error(err)
@@ -110,7 +112,8 @@ func deleteFile(c echo.Context) (err error) {
 		c.Logger().Error(err)
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid payload")
 	}
-	err = logic.DeleteFileToS3(data.Key)
+
+	err = logicInstance.DeleteFileToS3(data.Key)
 	if err != nil {
 		c.Logger().Error(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, "error...")
