@@ -1,6 +1,5 @@
 <template>
   <div class="app">
-    <particles-bg type="circle" :bg="true" :canvas="canvasObject"/>
     <div id="nav">
       <nuxt-link to="/">ログアップローダー</nuxt-link> |
       <nuxt-link to="/list">ファイル一覧</nuxt-link>
@@ -12,25 +11,14 @@
 <script lang='ts'>
   import {
     createComponent,
-    reactive,
-    onBeforeMount,
-    onUpdated,
-    onMounted,
-    computed,
-    watch,
-    ref
   } from '@vue/composition-api';
-
-  const canvasObject = {
-    height: '120%'
-    };
 
   export default createComponent({
 
     setup () {
 
       return {
-        canvasObject
+
       };
     }
   });

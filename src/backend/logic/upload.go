@@ -11,9 +11,9 @@ import (
 )
 
 
-func (i *Impl)UploadFileToS3(fileType string, gzippedEncodeData string, fileName string) (result string, err error) {
+func (i *Impl)UploadFileToS3(fileType string, gzippedEncodeData *string, fileName string) (result string, err error) {
 	log.Info("start upload file to s3: " + fileType + "/" + fileName)
-	data, err := base64.StdEncoding.DecodeString(strings.Replace(gzippedEncodeData, "data:text/csv;base64,", "", 1))
+	data, err := base64.StdEncoding.DecodeString(strings.Replace(*gzippedEncodeData, "data:text/csv;base64,", "", 1))
 	if err != nil {
 		return "failed decode Data", err
 	}
@@ -47,8 +47,7 @@ func (i *Impl)UploadFileToS3(fileType string, gzippedEncodeData string, fileName
 		log.Error(err)
 		return "failed reader close", err
 	}
-	EncodeDataBuffer.Reset()
-	gzippedEncodeDataBuffer.Reset()
+
 	defer tempFile.Close()
 
 	key := createPrefix(fileType) + "/" + fileName

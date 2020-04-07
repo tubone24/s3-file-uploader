@@ -118,10 +118,11 @@
         }).catch((err) => {
           statusCode = err.response.status;
           toast.global.unknownError();
-        });
-        state.isLoading = false;
-        state.file = '';
-        state.fileName = '';
+        }).finally(() => {
+          state.isLoading = false;
+          state.file = '';
+          state.fileName = '';
+        })
       };
 
 

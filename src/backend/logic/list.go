@@ -7,18 +7,18 @@ import (
 	"strings"
 )
 
-func (i *Impl)ListObjects (prefix string) (map[string][]map[string]string, error){
-	resp, err := i.listObject(prefix)
+func (i *Impl)ListObjects (prefix string) (*map[string][]map[string]string, error){
+	resp, err := i.listObject(&prefix)
 	if err != nil {
 		log.Error(err)
-		return map[string][]map[string]string{"fileList": nil}, err
+		return &map[string][]map[string]string{"fileList": nil}, err
 	}
 	returnMap := map[string][]map[string]string{"fileList": convertS3FileObjectInfosToMaps(resp)}
-	return returnMap, nil
+	return &returnMap, nil
 }
 
-func (i *Impl)listObject(prefix string) ([]aws.S3FileObjectInfo, error){
-	return i.s3.ListObject(i.appConfig.Aws.BucketName, prefix)
+func (i *Impl)listObject(prefix *string) ([]aws.S3FileObjectInfo, error){
+	return i.s3.ListObject(i.appConfig.Aws.BucketName, *prefix)
 }
 
 func convertS3FileObjectInfosToMaps(s3ObjectInfos []aws.S3FileObjectInfo) []map[string]string{
@@ -30,7 +30,7 @@ func convertS3FileObjectInfosToMaps(s3ObjectInfos []aws.S3FileObjectInfo) []map[
 		objectList = append(objectList, map[string]string{
 			"name": item.Name,
 			"lastModified": item.LastModified,
-			"size": strconv.FormatInt(item.Size, 10) + "B",
+			"size": strconv.FormatInt(item.Size, 10),
 		})
 	}
 	return objectList

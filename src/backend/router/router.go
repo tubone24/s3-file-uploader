@@ -43,7 +43,7 @@ func New() *echo.Echo {
 			}
 			return false, nil
 		},
-		Realm: "Restricted",
+		Realm: "Enter your credentials to login to log-uploader",
 	}))
 	initRouting(e)
 	e.Validator = &CustomValidator{validator: validator.New()}
@@ -73,7 +73,7 @@ func upload(c echo.Context) (err error) {
 		c.Logger().Error(err)
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid payload")
 	}
-	result, err := logicInstance.UploadFileToS3(data.FileType, data.Data, data.FileName)
+	result, err := logicInstance.UploadFileToS3(data.FileType, &data.Data, data.FileName)
 	if err != nil {
 		c.Logger().Error(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, result)
@@ -88,7 +88,7 @@ func list(c echo.Context) (err error) {
 		c.Logger().Error(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, "error")
 	}
-	return c.JSON(http.StatusOK, result)
+	return c.JSON(http.StatusOK, &result)
 }
 
 func download(c echo.Context) (err error) {
@@ -99,7 +99,7 @@ func download(c echo.Context) (err error) {
 		c.Logger().Error(err)
 		return echo.NewHTTPError(http.StatusInternalServerError, "error")
 	}
-	return c.Blob(http.StatusOK, contentType, fileBytes)
+	return c.Blob(http.StatusOK, contentType, *fileBytes)
 }
 
 func deleteFile(c echo.Context) (err error) {

@@ -26,22 +26,24 @@
             <b-table
                :data="state.uploadList"
                :paginated="true"
-               :pagination-position="bottom"
-               :default-sort="updated"
-               :sticky-header="stickyHeaders"
+               :pagination-position="top"
+               :default-sort-direction="desc"
+               :sticky-header="true"
+               :height="500"
+               default-sort="updated"
             >
               <template slot-scope="uploadList">
-                <b-table-column fileld="filename" label="ファイル名" width="120" sortable>
-                  {{uploadList.row.name}}
+                <b-table-column field="name" label="ファイル名" sortable>
+                  {{ uploadList.row.name }}
                 </b-table-column>
-                <b-table-column fileld="updated" label="更新日時" width="120" sortable>
-                  {{uploadList.row.lastModified}}
+                <b-table-column field="lastModified" label="更新日時" sortable>
+                  {{ uploadList.row.lastModified }}
                 </b-table-column>
-                <b-table-column fileld="size" label="サイズ" width="100" sortable>
-                  {{uploadList.row.size}}
+                <b-table-column field="size" label="サイズ(B)" numeric sortable>
+                  {{ uploadList.row.size }}
                 </b-table-column>
-                <b-table-column fileld="download" label="-" width="100" sortable>
-                  <button class="download-button" v-on:click="doDownload(uploadList.row.name)">DL </button>
+                <b-table-column field="download" label="" >
+                  <button class="download-button" v-on:click="doDownload(uploadList.row.name)">DL&nbsp;</button>
                   <button class="delete-button" v-on:click="doComfirmDelete(uploadList.row.name)">DEL</button>
                 </b-table-column>
               </template>

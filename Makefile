@@ -1,5 +1,9 @@
 .PHONY: install build
 
+clean:
+	rm -rf src/backend/assets/* && \
+	touch src/backend/assets/.gitkeep
+
 front-install:
 	cd src/front && \
 	npm install
@@ -7,8 +11,8 @@ front-install:
 front-build:
 	cd src/front && \
 	npm run build && \
-	rm -rf assets/* && \
-	touch assets/.gitkeep && \
+	rm -rf ../backend/assets/* && \
+	touch ../backend/assets/.gitkeep && \
 	cp -r dist/* ../backend/assets/
 
 backend-install:
@@ -25,3 +29,7 @@ backend-run:
 backend-test:
 	cd src/backend && \
 	go test -v ./...
+
+docker-build:
+	make clean && \
+	docker build -t log-uploader .

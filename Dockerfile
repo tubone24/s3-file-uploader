@@ -54,7 +54,7 @@ RUN mkdir /app
 WORKDIR /app
 ADD . /app
 RUN make front-install
-RUN make front-build
 RUN make backend-install
+RUN make front-build
 RUN make backend-build
 EXPOSE 8585

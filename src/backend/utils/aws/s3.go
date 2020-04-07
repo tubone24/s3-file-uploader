@@ -87,7 +87,7 @@ func (s *S3Impl) ListObject(bucket string, prefix string) ([]S3FileObjectInfo, e
 	return objectList, nil
 }
 
-func (s *S3Impl) DownloadFile(bucket string, key string) ([]byte, error) {
+func (s *S3Impl) DownloadFile(bucket string, key string) (*[]byte, error) {
 	downloader := s3manager.NewDownloader(s3Session)
 	params := &s3.GetObjectInput{
 		Bucket: aws.String(bucket),
@@ -103,7 +103,7 @@ func (s *S3Impl) DownloadFile(bucket string, key string) ([]byte, error) {
 
 	fileBytes := fileBuf.Bytes()
 
-	return fileBytes, nil
+	return &fileBytes, nil
 }
 
 func (s *S3Impl) DeleteObject(bucket string, key string) error {
