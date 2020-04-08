@@ -22,7 +22,7 @@ src/front/config/env/*.json
 src/backend/assets/*
 
 # artifact echo all packages
-# output
+output
 
 # npm
 node_modules

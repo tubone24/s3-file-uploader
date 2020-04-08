@@ -6,12 +6,9 @@
   "dependencies": {
     "@nuxt/typescript-runtime": "0.2.5",
     "@nuxtjs/axios": "5.8.0",
-    "@nuxtjs/dotenv": "^1.4.0",
     "@nuxtjs/eslint-config-typescript": "^1.0.0",
-    "@nuxtjs/pwa": "^3.0.0-0",
     "@nuxtjs/toast": "^3.3.0",
     "@vue/composition-api": "^0.3.2",
-    "bulmaswatch": "^0.7.5",
     "lodash": "^4.17.15",
     "loglevel": "^1.6.7",
     "nuxt": "2.10.2",

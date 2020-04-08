@@ -1,6 +1,8 @@
 FROM golang:latest
 MAINTAINER tubone24 <tubo.yyyuuu@gmail.com>
 
+ARG ENV=localhost
+
 RUN apt-get update && apt-get install -y xz-utils
 
 # golang公式imageにnodeを追加する
@@ -55,6 +57,8 @@ WORKDIR /app
 ADD . /app
 RUN make front-install
 RUN make backend-install
-RUN make front-build
-RUN make backend-build
+RUN make front-build ENV=$ENV
+RUN make backend-build ENV=$ENV
+WORKDIR /app/output
+CMD ["./log-uploader"]
 EXPOSE 8585

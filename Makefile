@@ -20,7 +20,7 @@ front-build:
 	rm -rf ../backend/assets/* && \
 	rm -rf ../../../output/assetes/* && \
 	touch ../backend/assets/.gitkeep && \
-	touch ../../dist/output/.gitkeep && \
+	touch ../../output/assets/.gitkeep && \
 	cp -r dist/* ../backend/assets/ && \
 	cp -r dist/* ../../output/assets/
 
@@ -30,7 +30,9 @@ backend-install:
 backend-build:
 	cd src/backend && \
 	cp -f config/env/${ENV}.toml config/config.toml && \
-	go build -o ../../output/log-uploader
+	go build -o ../../output/log-uploader && \
+	mkdir ../../output/config && \
+	cp config/config.toml ../../output/config/config.toml
 
 backend-run:
 	cd src/backend && \
@@ -43,4 +45,4 @@ backend-test:
 
 docker-build:
 	make clean && \
-	docker build -t log-uploader .
+	docker build -t log-uploader --build-arg ENV="${ENV}" .

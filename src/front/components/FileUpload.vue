@@ -44,6 +44,7 @@
   import toast from '@nuxtjs/toast';
   import { VueLoading } from 'vue-loading-template';
   import { gzipSync } from 'zlib';
+  import { fileOption, FileOption } from '@/config/config';
 
   // data
   const state = reactive<{
@@ -52,12 +53,14 @@
     selected: string;
     isLoading: boolean;
     isCompressing: boolean;
+    fileOptions: FileOption;
   }>({
     file: '',
     fileName: '',
     selected: '',
     isLoading: false,
-    isCompressing: false
+    isCompressing: false,
+    fileOptions: fileOption
   });
 
   const onFileChange = async (e: any): Promise<void> => {

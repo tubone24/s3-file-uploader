@@ -34,7 +34,6 @@ const nuxtConfig: Configuration = {
   modules: [
     'nuxt-buefy',
     '@nuxtjs/axios',
-    '@nuxtjs/pwa',
     '@nuxtjs/toast',
     ['nuxt-sass-resources-loader', ['@/assets/blumatheme.scss']],
   ],
