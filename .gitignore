@@ -14,10 +14,15 @@ log-uploader
 
 # config
 src/backend/config/env/*.toml
+src/backend/config/*.toml
 src/front/config/*.json
+src/front/config/env/*.json
 
-# front build
+# front build dist
 src/backend/assets/*
+
+# artifact all echo package
+dist/*
 
 # npm
 node_modules
