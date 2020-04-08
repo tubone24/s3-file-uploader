@@ -26,10 +26,11 @@
             <b-table
                :data="state.uploadList"
                :paginated="true"
-               :pagination-position="top"
+               :pagination-position="both"
                :default-sort-direction="desc"
                :sticky-header="true"
                :height="500"
+               :width="700"
                default-sort="updated"
             >
               <template slot-scope="uploadList">
@@ -149,8 +150,7 @@
                     const blob = await downloadFile(filePath);
                     const link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
-                    const filename = filePath.match(".+/(.+?)([\?#;].*)?$")[1];
-                    link.download = filename;
+                    link.download = filePath.match(".+/(.+?)([\?#;].*)?$")[1];
                     link.click();
                     state.isLoading = false;
                 } catch (e) {
@@ -167,7 +167,7 @@
             const doDeleteFile = async (): Promise<void> => {
                 modal.hide('dialog');
                 let statusCode = 404;
-                const res = await axios.post('/api/delete', {
+                await axios.post('/api/delete', {
                     key: state.modalSelect
                 }).then((response) => {
                     statusCode = response.status;
