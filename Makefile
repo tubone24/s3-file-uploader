@@ -5,6 +5,9 @@ ENV = $1
 clean:
 	rm -rf src/backend/assets/* && \
 	touch src/backend/assets/.gitkeep
+	rm -rf output/* && \
+	mkdir output/assets && \
+	touch output/assets/.gitkeep
 
 front-install:
 	cd src/front && \
@@ -15,11 +18,11 @@ front-build:
 	cp -f config/env/${ENV}.json config/config.json && \
 	npm run build && \
 	rm -rf ../backend/assets/* && \
-	rm -rf ../../../dist/assetes/* && \
+	rm -rf ../../../output/assetes/* && \
 	touch ../backend/assets/.gitkeep && \
-	touch ../../dist/assets/.gitkeep && \
+	touch ../../dist/output/.gitkeep && \
 	cp -r dist/* ../backend/assets/ && \
-	cp -r dist/* ../../dist/assets/
+	cp -r dist/* ../../output/assets/
 
 backend-install:
 	go mod download
@@ -27,7 +30,7 @@ backend-install:
 backend-build:
 	cd src/backend && \
 	cp -f config/env/${ENV}.toml config/config.toml && \
-	go build -o ../../dist/log-uploader
+	go build -o ../../output/log-uploader
 
 backend-run:
 	cd src/backend && \
