@@ -21,9 +21,6 @@ src/front/config/env/*.json
 # front build dist
 src/backend/assets/*
 
-# artifact all echo package
-dist/*
-
 # npm
 node_modules
 
@@ -34,7 +31,7 @@ npm-debug.log
 .nuxt
 
 # Nuxt generate
-dist
+src/front/dist
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template
