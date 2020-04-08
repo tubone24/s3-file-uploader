@@ -20,7 +20,9 @@ src/front/config/env/*.json
 
 # front build dist
 src/backend/assets/*
-dist/assets/*
+
+# artifact echo all packages
+output/*
 
 # npm
 node_modules
