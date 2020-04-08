@@ -4,7 +4,7 @@
       <b-field>
       <b-select id="format-select" v-model="state.selected">
         <option disabled value="">ファイル種類選択</option>
-        <option value="test">test</option>
+        <option v-for="item in state.fileOptions" v-bind:value="item.value">{{item.name}}</option>
       </b-select>
         </b-field>
     </div>

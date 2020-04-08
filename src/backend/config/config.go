@@ -4,7 +4,7 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
-const confDir = "./config/env/"
+const confDir = "./config/"
 
 var conf Config
 
@@ -29,9 +29,8 @@ type Config struct {
 	BasicAuth BasicAuthConfig `toml:"auth"`
 }
 
-func NewConfig(env string) (Config, error) {
-
-	confPath := confDir + env + ".toml"
+func NewConfig() (Config, error) {
+	confPath := confDir  + "config.toml"
 	if _, err := toml.DecodeFile(confPath, &conf); err != nil {
 		return conf, err
 	}

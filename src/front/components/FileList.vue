@@ -4,7 +4,7 @@
             <b-field>
                 <b-select id="format-select" v-model="state.selected">
                     <option disabled value="">ファイル種類選択</option>
-                    <option value="test">test</option>
+                    <option v-for="item in state.fileOptions" v-bind:value="item.value">{{item.name}}</option>
                 </b-select>
             </b-field>
             <div v-if="state.selected">
@@ -85,19 +85,23 @@
     } from '@vue/composition-api';
     import axios from 'axios';
     import { VueLoading } from 'vue-loading-template';
-    import {FileNotFoundError} from "~/types/error";
+    import {FileNotFoundError} from '~/types/error';
+    import { fileOption, FileOption } from '@/config/config';
     // data
     const state = reactive<{
         uploadList: Array<Map<string, string>>
         selected: string,
         isLoading: boolean,
-        modalSelect: string
+        modalSelect: string,
+        fileOptions: FileOption
     }>({
         uploadList: [],
         selected: '',
         isLoading: false,
-        modalSelect: ''
+        modalSelect: '',
+        fileOptions: fileOption
     });
+
 
     const updateFileList = async (): Promise<void> => {
         const res = await axios.get('/api/list', {

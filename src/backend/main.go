@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	appConfig, err := config.NewConfig("localhost")
+	appConfig, err := config.NewConfig()
 	if err != nil {
 		log.Error(err)
 	}
