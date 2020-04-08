@@ -20,6 +20,7 @@ src/front/config/env/*.json
 
 # front build dist
 src/backend/assets/*
+dist/assets/*
 
 # npm
 node_modules
