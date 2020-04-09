@@ -8,6 +8,7 @@ require (
 	github.com/go-playground/locales v0.12.1 // indirect
 	github.com/go-playground/universal-translator v0.16.0 // indirect
 	github.com/golang/mock v1.4.3
+	github.com/imdario/mergo v0.3.9
 	github.com/jmespath/go-jmespath v0.3.0 // indirect
 	github.com/jung-kurt/gofpdf v1.7.0
 	github.com/labstack/echo v3.3.10+incompatible

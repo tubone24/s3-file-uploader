@@ -61,14 +61,3 @@ func (d *DynamoDBImpl) Scan(tableName string, limit int64) ([]map[string]*dynamo
 
 	return data, nil
 }
-
-func AttributeValueToString(key string, value *dynamodb.AttributeValue) map[string]string {
-	stringItem := map[string]string {}
-	stringItem[key] = value.String()
-	if value.N != nil {
-		stringItem[key] = *value.N
-	} else if value.S != nil {
-		stringItem[key] = *value.S
-	}
-	return stringItem
-}

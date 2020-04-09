@@ -18,6 +18,10 @@ type AwsConfig struct {
 	DynamoDBLastKeyTable string `toml:"dynamodb_lastkey_table"`
 }
 
+type DBConfig struct {
+	KeyList []string `toml:"key_list"`
+}
+
 type BasicAuthConfig struct {
 	UserName string `toml:"username"`
 	Password string `toml:"password"`
@@ -27,6 +31,7 @@ type Config struct {
 	Basic BasicConfig `toml:"basic"`
 	Aws AwsConfig `toml:"aws"`
 	BasicAuth BasicAuthConfig `toml:"auth"`
+	DB DBConfig `toml:"db"`
 }
 
 func NewConfig() (Config, error) {
