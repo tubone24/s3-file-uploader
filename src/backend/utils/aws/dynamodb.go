@@ -24,10 +24,19 @@ func GetDynamoDBInstance() *DynamoDBImpl {
 	return dynamoDBInstance
 }
 
-func (d *DynamoDBImpl) Scan(tableName string) ([]map[string]*dynamodb.AttributeValue, error) {
-	params := &dynamodb.ScanInput{
-		TableName: &tableName,
+func (d *DynamoDBImpl) Scan(tableName string, limit int64) ([]map[string]*dynamodb.AttributeValue, error) {
+	var params *dynamodb.ScanInput
+	if limit == -1 {
+		params = &dynamodb.ScanInput{
+			TableName: &tableName,
+		}
+	} else {
+		params = &dynamodb.ScanInput{
+			TableName: &tableName,
+			Limit: &limit,
+		}
 	}
+
 	res, err := d.client.Scan(params)
 	if err != nil {
 		return nil, err
@@ -56,5 +65,10 @@ func (d *DynamoDBImpl) Scan(tableName string) ([]map[string]*dynamodb.AttributeV
 func AttributeValueToString(key string, value *dynamodb.AttributeValue) map[string]string {
 	stringItem := map[string]string {}
 	stringItem[key] = value.String()
+	if value.N != nil {
+		stringItem[key] = *value.N
+	} else if value.S != nil {
+		stringItem[key] = *value.S
+	}
 	return stringItem
 }

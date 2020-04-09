@@ -8,3 +8,4 @@ password = "test"
 [aws]
 region = "ap-southeast-2"
 bucket_name = "test-bucket"
+dynamodb_lastkey_table = "test-db"

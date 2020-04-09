@@ -57,6 +57,7 @@ func initRouting(e *echo.Echo){
 	e.GET("/api/list", list)
 	e.GET("/api/download", download)
 	e.POST("/api/delete", deleteFile)
+	e.GET("/api/checkdb", checkDB)
 }
 
 func status(c echo.Context) error {
@@ -119,4 +120,13 @@ func deleteFile(c echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusInternalServerError, "error...")
 	}
 	return c.JSON(http.StatusOK, map[string]string{"fileName": data.Key})
+}
+
+func checkDB(c echo.Context) (err error) {
+	ret, err := logicInstance.CheckDynamoLastKey()
+	if err != nil {
+		c.Logger().Error(err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "error...")
+	}
+	return c.JSON(http.StatusOK, ret)
 }

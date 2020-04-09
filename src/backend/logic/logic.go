@@ -12,17 +12,20 @@ type Logic interface {
 	listObject(prefix string) ([]aws.S3FileObjectInfo, error)
 	UploadFileToS3(fileType string, gzippedEncodeData string, fileName string) (result string, err error)
 	uploadFile(filename string, key string) error
+	CheckDynamoLastKey() ([]map[string]string, error)
 }
 
 type Impl struct {
 	appConfig *config.Config
 	s3 *aws.S3Impl
+	dynamo *aws.DynamoDBImpl
 }
 
 func New() *Impl {
 	impl := Impl{
 		appConfig: config.GetConfig(),
 		s3: aws.GetS3Instance(),
+		dynamo: aws.GetDynamoDBInstance(),
 	}
 	return &impl
 }
