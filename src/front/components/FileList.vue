@@ -34,16 +34,16 @@
                default-sort="updated"
             >
               <template slot-scope="uploadList">
-                <b-table-column field="name" label="ファイル名" sortable>
+                <b-table-column field="name" label="ファイル名" width="120" sortable>
                   {{ uploadList.row.name }}
                 </b-table-column>
-                <b-table-column field="lastModified" label="更新日時" sortable>
+                <b-table-column field="lastModified" label="更新日時" width="100" sortable>
                   {{ uploadList.row.lastModified }}
                 </b-table-column>
-                <b-table-column field="size" label="サイズ(B)" numeric sortable>
+                <b-table-column field="size" label="サイズ(B)" numeric width="80" sortable>
                   {{ uploadList.row.size }}
                 </b-table-column>
-                <b-table-column field="download" label="" >
+                <b-table-column field="download" label="" width="30">
                   <button class="download-button" v-on:click="doDownload(uploadList.row.name)">DL&nbsp;</button>
                   <button class="delete-button" v-on:click="doComfirmDelete(uploadList.row.name)">DEL</button>
                 </b-table-column>
@@ -222,6 +222,7 @@
     .file-table {
         position: relative;
         top: 100px;
+        width: 700px;
     }
     /*table {*/
     /*    width: 110%;*/

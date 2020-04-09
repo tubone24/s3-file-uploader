@@ -55,10 +55,8 @@ RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
 RUN mkdir /app
 WORKDIR /app
 ADD . /app
-RUN make front-install
-RUN make backend-install
-RUN make front-build ENV=$ENV
-RUN make backend-build ENV=$ENV
+RUN make front-install && make backend-install && \
+    make front-build ENV=$ENV && make backend-build ENV=$ENV
 WORKDIR /app/output
 CMD ["./log-uploader"]
 EXPOSE 8585
