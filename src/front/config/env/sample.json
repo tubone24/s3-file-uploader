@@ -8,5 +8,8 @@
       "name": "test2",
       "value": "test2"
     }
+  ],
+  "dbKetList": [
+    "id", "test"
   ]
 }

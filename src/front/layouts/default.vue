@@ -2,7 +2,8 @@
   <div class="app">
     <div id="nav">
       <nuxt-link to="/">ログアップローダー</nuxt-link> |
-      <nuxt-link to="/list">ファイル一覧</nuxt-link>
+      <nuxt-link to="/list">ファイル一覧</nuxt-link> |
+      <nuxt-link to="/check">DBチェック</nuxt-link>
     </div>
     <nuxt/>
   </div>
