@@ -11,6 +11,12 @@ The features of this system are as follows.
 - List S3 files.
 - HTTP Basic Authentication.
 
+### With AWS ECS
+
+Example log-uploader archtecture with AWS ECS(Fargate)
+
+![img](./docs/images/arch.png)
+
 ## Install
 
 ### Precondition
