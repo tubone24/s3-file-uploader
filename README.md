@@ -4,6 +4,13 @@
 
 Web application proxying S3 access because my company proxy prohibits S3 access(OMG).
 
+The features of this system are as follows.
+
+- Never using `PUT` or `Delete` HTTP methods because of prohibits to my company's proxy
+- compress GZip before upload file because of prohibits large file for my company's proxy.
+- List S3 files.
+- HTTP Basic Authentication.
+
 ## Install
 
 ### Precondition
